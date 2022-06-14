@@ -1,17 +1,20 @@
 const connection = require('../../database/connection');
 const md5 = require('md5');
+const moment = require('moment');
 
 module.exports = {
     async createUser(req, res) {
         const { body } = req;
+        const now = moment().format('Y-MM-DD H:mm:ss');
+
         const createdUser = await connection('users').insert({
             name: body.name,
             username: body.username,
             password: md5(body.password),
             phone: body.phone,
-            expirationToken: Date.now(),
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
+            expirationToken: moment().format('Y-MM-DD H:mm:ss'),
+            createdAt: moment().format('Y-MM-DD H:mm:ss'),
+            updatedAt: moment().format('Y-MM-DD H:mm:ss'),
         }, ['id'])
         res.status(200).json({ data: { id: createdUser }, msg: "usuário criado com sucesso!" });
     },
@@ -50,7 +53,7 @@ module.exports = {
             name: body.name,
             username: body.username,
             phone: body.phone,
-            updatedAt: Date.now(),
+            updatedAt: moment().format('Y-MM-DD H:mm:ss'),
         };
         if (body.password) {
             updateUser.password = body.password;
