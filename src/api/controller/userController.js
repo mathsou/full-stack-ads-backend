@@ -1,76 +1,28 @@
-const connection = require('../../database/connection');
-const md5 = require('md5');
-const moment = require('moment');
+const userService = require('../service/userService');
 
 module.exports = {
     async createUser(req, res) {
         const { body } = req;
-        const now = moment().format('Y-MM-DD H:mm:ss');
-
-        const createdUser = await connection('users').insert({
-            name: body.name,
-            username: body.username,
-            password: md5(body.password),
-            phone: body.phone,
-            expirationToken: moment().format('Y-MM-DD H:mm:ss'),
-            createdAt: moment().format('Y-MM-DD H:mm:ss'),
-            updatedAt: moment().format('Y-MM-DD H:mm:ss'),
-        }, ['id'])
-        res.status(200).json({ data: { id: createdUser }, msg: "usuário criado com sucesso!" });
+        const {code, data, msg} = await userService.saveUser(body);
+        res.status(code).json({data, msg});
     },
-
-    async allUsers(req, res) {
-        const users = await connection('users')
-            .select(
-                'id',
-                'name',
-                'username',
-                'phone',
-                'createdAt',
-                'updatedAt'
-            );
-        res.status(200).json({ data: users });
+    async allUsers(_, res) {
+        const {code, data } = await userService.listAllUsers();
+        res.status(code).json({ data });
     },
     async oneUser(req, res) {
         const { params: { id } } = req;
-        const users = await connection('users')
-            .select(
-                'id',
-                'name',
-                'username',
-                'phone',
-                'createdAt',
-                'updatedAt'
-            )
-            .where('id', id)
-            .first();
-        res.status(200).json({ data: users });
+        const {code, data } = await userService.listOneUser(id);
+        res.status(code).json({ data });
     },
     async updateUser(req, res) {
         const { params: { id }, body } = req;
-
-        let updateUser = {
-            name: body.name,
-            username: body.username,
-            phone: body.phone,
-            updatedAt: moment().format('Y-MM-DD H:mm:ss'),
-        };
-        if (body.password) {
-            updateUser.password = body.password;
-        }
-        const updatedUser = await connection('users')
-            .update(updateUser, ['id'])
-            .where('id', id)
-
-        res.status(200).json({ data: { id: updatedUser }, msg: "usuário alterado com sucesso!" });
+        const {code, data, msg } = await userService.updateUser(id, body);
+        res.status(code).json({ data, msg });
     },
-
     async deleteUser(req, res) {
         const { params: { id } } = req;
-        await connection('users')
-            .where('id', id)
-            .del();
-            
-        res.status(200).json({ msg: "usuário excluído com sucesso!" });
+        const {code, data, msg } = await userService.deleteUser(id);
+        res.status(code).json({ data, msg });
     },
 }
