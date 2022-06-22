@@ -1,9 +1,9 @@
 const connection = require('../../database/connection');
-const { format } = require('moment');
+const moment = require('moment');
 
 module.exports = {
     async saveUser(payload) {
-        const now = format('Y-MM-DD H:mm:ss');
+        const now = moment().format('Y-MM-DD H:mm:ss');
         return await connection('users').insert({
             ...payload,
             expirationToken: now,
@@ -35,18 +35,27 @@ module.exports = {
             .where('id', id)
             .first();
     },
-    async findUserByEmail(email){
+    async findUserByUsername(username){
         return await connection('users')
             .select(
                 'id',
                 'name',
                 'username',
+                'password',
                 'phone',
                 'createdAt',
                 'updatedAt'
             )
-            .where('email', email)
-            .first();
+            .where('username', username)
+    },
+    async findActiveRentsFromUser(id){
+        return await connection('users')
+            .select(
+                'rents.bookId',
+            )
+            .join('rents', 'rents.userId', 'users.id')
+            .whereNull('returnedAt')
+            .andWhere('users.id', id);
     },
     async updateUser(id, user){
         return await connection('users')

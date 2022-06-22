@@ -47,5 +47,21 @@ module.exports = {
             }
         }
         });
-    }
+    },
+    loginValidator(body){
+        return validator({
+            data: body,
+            fields: {
+            username: {
+                required: true,
+                type: 'string',
+                length: 40,
+            },
+            password: {
+                required: true,
+                type: 'string',
+            },
+        }
+        });
+    },
 }

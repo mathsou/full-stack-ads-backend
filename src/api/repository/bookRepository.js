@@ -1,47 +1,60 @@
 const connection = require('../../database/connection');
-const { format } = require('moment');
+const moment = require('moment');
 
 module.exports = {
     async saveBook(payload) {
-        const now = format('Y-MM-DD H:mm:ss');
+        const now = moment().format('Y-MM-DD H:mm:ss');
         return await connection('books').insert({
             ...payload,
             createdAt: now,
             updatedAt: now,
         }, ['id']);
     },
-    async listAllBooks(){
+    async listAllBooks({name='', isbn='', author}){
         return await connection('books')
             .select(
-                'id',
+                'books.id',
                 'books.name',
-                'isbn',
-                'year',
+                'books.isbn',
+                'books.year',
                 'publisherId',
-                'publishers.name',
-                'createdAt',
-                'updatedAt'
-            ).join('publishers', 'publishers.id', 'books.publisherId');
+                'publishers.name as publisher',
+                'books.createdAt',
+                'books.updatedAt'
+            ).join('publishers', 'publishers.id', 'books.publisherId')
+            .leftJoin('authorbooks', 'authorbooks.id', 'books.id')
+            .andWhereILike('books.name', `%${name}%`)
+            .andWhereILike('isbn', `%${isbn}%`)
     },
     async listOneBook(id){
         return await connection('books')
             .select(
-                'id',
+                'books.id',
                 'books.name',
-                'isbn',
-                'year',
+                'books.isbn',
+                'books.year',
                 'publisherId',
-                'publishers.name',
-                'createdAt',
-                'updatedAt'
-            ).join('books', 'publishers.id', 'books.publisherId')
-            .where('id', id)
+                'publishers.name as publisher',
+                'books.createdAt',
+                'books.updatedAt'
+            ).join('publishers', 'publishers.id', 'books.publisherId')
+            .where('books.id', id)
             .first();
     },
-    async updateBook(id, publisher){
+    async findBooksByIdIfNotRented(id){
+        return await connection('books')
+            .distinct(
+                'books.id',
+            ).leftJoin('rents', 'rents.bookId', 'books.id')
+            .whereNotNull('returnedAt')
+            .orWhereNull('rents.id')
+            .andWhere('books.id', id)
+            .first();
+    },
+    async updateBook(id, book){
         return await connection('books')
             .update({
-                ...publisher,
+                ...book,
                 updatedAt: moment().format('Y-MM-DD H:mm:ss'),
             }, ['id'])
             .where('id', id)

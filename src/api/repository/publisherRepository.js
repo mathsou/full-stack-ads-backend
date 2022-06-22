@@ -1,9 +1,9 @@
 const connection = require('../../database/connection');
-const { format } = require('moment');
+const moment = require('moment');
 
 module.exports = {
     async savePublisher(payload) {
-        const now = format('Y-MM-DD H:mm:ss');
+        const now = moment().format('Y-MM-DD H:mm:ss');
         return await connection('publishers').insert({
             ...payload,
             createdAt: now,

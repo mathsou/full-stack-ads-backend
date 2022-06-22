@@ -25,4 +25,9 @@ module.exports = {
         const {code, data, msg } = await userService.deleteUser(id);
         res.status(code).json({ data, msg });
     },
+    async login(req, res) {
+        const { body } = req;
+        const {code, data, msg} = await userService.login(body);
+        res.status(code).json({data, msg});
+    },
 }

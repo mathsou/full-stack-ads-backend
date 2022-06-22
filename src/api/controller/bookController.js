@@ -9,8 +9,9 @@ module.exports = {
         const {code, data, msg} = await bookService.saveBook(body);
         res.status(code).json({data, msg});
     },
-    async allBooks(_, res) {
-        const {code, data } = await bookService.listAllBooks();
+    async allBooks(req, res) {
+        const { query } = req;
+        const {code, data } = await bookService.listAllBooks(query);
         res.status(code).json({ data });
     },
     async oneBook(req, res) {

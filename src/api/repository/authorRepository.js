@@ -1,9 +1,9 @@
 const connection = require('../../database/connection');
-const { format } = require('moment');
+const moment = require('moment');
 
 module.exports = {
     async saveAuthor(payload) {
-        const now = format('Y-MM-DD H:mm:ss');
+        const now = moment().format('Y-MM-DD H:mm:ss');
         return await connection('authors').insert({
             ...payload,
             createdAt: now,
@@ -19,6 +19,16 @@ module.exports = {
                 'createdAt',
                 'updatedAt'
             );
+    },
+    async findAuthorByIds(ids){
+        return await connection('authors')
+            .select(
+                'id',
+                'name',
+                'country',
+                'createdAt',
+                'updatedAt'
+            ) .whereIn('id', ids);
     },
     async listOneAuthor(id){
         return await connection('authors')

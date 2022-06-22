@@ -62,7 +62,6 @@ module.exports = {
             if(await publisherRepository.deletePublisher(id)){
                 return { 
                     code: 200, 
-                    data,
                     msg: "Editora excluída com sucesso!"
                 }
             }

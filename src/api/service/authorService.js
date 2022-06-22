@@ -62,7 +62,6 @@ module.exports = {
             if(await authorRepository.deleteAuthor(id)){
                 return { 
                     code: 200, 
-                    data,
                     msg: "Autor(a) excluído com sucesso!"
                 }
             }
