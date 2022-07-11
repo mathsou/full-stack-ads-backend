@@ -46,9 +46,11 @@ module.exports = {
             .distinct(
                 'books.id',
             ).leftJoin('rents', 'rents.bookId', 'books.id')
-            .whereNotNull('returnedAt')
-            .orWhereNull('rents.id')
-            .andWhere('books.id', id)
+            .where('books.id', id)
+            .andWhere((builder) => builder
+                .whereNotNull('returnedAt')
+                .orWhereNull('rents.id')
+            )
             .first();
     },
     async updateBook(id, book){
