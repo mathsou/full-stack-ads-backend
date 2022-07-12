@@ -22,7 +22,7 @@ module.exports = {
                 msg: "Nome de usuário está em uso!"
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listAllUsers(){
@@ -33,7 +33,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listOneUser(id){
@@ -44,7 +44,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async updateUser(id, user){
@@ -72,7 +72,7 @@ module.exports = {
                 msg: "Usuário não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async deleteUser(id){
@@ -88,7 +88,7 @@ module.exports = {
                 msg: "Usuário não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async login(body) {
@@ -111,7 +111,7 @@ module.exports = {
                 msg: "usuário ou senha inválido!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
 }

@@ -33,7 +33,7 @@ module.exports = {
                 msg: "Livro não disponível!"
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async returnBook(id){
@@ -52,7 +52,7 @@ module.exports = {
                 msg: "Registro de retirada não encontrada!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
 }

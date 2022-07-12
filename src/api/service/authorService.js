@@ -13,7 +13,7 @@ module.exports = {
                 msg: "Autor(a) criado com sucesso!" 
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listAllAuthors(){
@@ -24,7 +24,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listOneAuthor(id){
@@ -35,7 +35,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async updateAuthor(id, user){
@@ -54,7 +54,7 @@ module.exports = {
                 msg: "Autor(a) não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async deleteAuthor(id){
@@ -70,7 +70,7 @@ module.exports = {
                 msg: "Autor(a) não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
 }

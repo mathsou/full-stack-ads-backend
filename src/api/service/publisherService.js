@@ -13,7 +13,7 @@ module.exports = {
                 msg: "Editora criada com sucesso!" 
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listAllPublishers(){
@@ -24,7 +24,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listOnePublisher(id){
@@ -35,7 +35,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async updatePublisher(id, user){
@@ -54,7 +54,7 @@ module.exports = {
                 msg: "Editora não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async deletePublisher(id){
@@ -70,7 +70,7 @@ module.exports = {
                 msg: "Editora não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
 }

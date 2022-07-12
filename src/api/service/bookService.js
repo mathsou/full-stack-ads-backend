@@ -32,7 +32,7 @@ module.exports = {
                 msg: `Autores(as) de ids ${idsNotFinded.join(', ')} não encontrado!`
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listAllBooks({ name, isbn }) {
@@ -43,7 +43,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async listOneBook(id) {
@@ -54,7 +54,7 @@ module.exports = {
                 data
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async updateBook(id, user) {
@@ -88,7 +88,7 @@ module.exports = {
                 msg: `Autores(as) de ids ${idsNotFinded.join(', ')} não encontrado!`
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
     async deleteBook(id) {
@@ -105,7 +105,7 @@ module.exports = {
                 msg: "Livro não encontrado!",
             }
         } catch (err) {
-            return { code: err.code || 500, msg: err.message }
+            return { code: 500, msg: err.message }
         }
     },
 }
