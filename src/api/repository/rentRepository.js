@@ -15,7 +15,8 @@ module.exports = {
             .update({
                 ...rent,
                 updatedAt: moment().format('Y-MM-DD H:mm:ss'),
-            }, ['id'])
-            .where('id', id)
+            })
+            .whereNull('returnedAt')
+            .andwhere('bookId', id);
     },
 }
