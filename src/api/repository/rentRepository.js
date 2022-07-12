@@ -17,6 +17,6 @@ module.exports = {
                 updatedAt: moment().format('Y-MM-DD H:mm:ss'),
             })
             .whereNull('returnedAt')
-            .andwhere('bookId', id);
+            .andWhere('bookId', id);
     },
 }
