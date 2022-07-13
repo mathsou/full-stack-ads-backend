@@ -95,10 +95,10 @@ module.exports = {
         try {
             const validatedResult = loginValidator(body);
             const user = await userRepository.findUserByUsername(validatedResult.username);
-            if(user[0].password === md5(validatedResult.password)) {
+            if(user[0] && user[0].password === md5(validatedResult.password)) {
                 const token = jwt.sign({
-                    id: user.id,
-                    name: user.name,
+                    id: user[0].id,
+                    name: user[0].name,
                 })
                 return { 
                     code: 200, 

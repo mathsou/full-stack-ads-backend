@@ -18,7 +18,8 @@ module.exports = {
                 'country',
                 'createdAt',
                 'updatedAt'
-            );
+            )
+            .orderBy('id', 'desc');
     },
     async findAuthorByIds(ids){
         return await connection('authors')

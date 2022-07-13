@@ -20,7 +20,8 @@ module.exports = {
                 'phone',
                 'createdAt',
                 'updatedAt'
-            );
+            )
+            .orderBy('id', 'desc');
     },
     async listOneUser(id){
         return await connection('users')

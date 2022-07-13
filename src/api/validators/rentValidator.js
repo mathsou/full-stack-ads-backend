@@ -9,7 +9,6 @@ module.exports = {
                     type: 'number'
                 },
                 userId: {
-                    required: true,
                     type: 'number'
                 },
             }

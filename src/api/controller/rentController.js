@@ -6,7 +6,8 @@ const rentService = require('../service/rentService');
 module.exports = {
     async rentBook(req, res) {
         const { body } = req;
-        const { code, data, msg } = await rentService.rentBook(body);
+        const { locals: { payload: { id: userId } } } = res;
+        const { code, data, msg } = await rentService.rentBook(userId, body);
         res.status(code).json({ data, msg });
     },
     async returnBook(req, res) {

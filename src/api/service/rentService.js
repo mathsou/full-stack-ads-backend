@@ -5,19 +5,19 @@ const { createRentValidator, updateRentValidator } = require('../validators/rent
 const moment = require('moment');
 
 module.exports = {
-    async rentBook(body) {
+    async rentBook(userId, body) {
         try {
             const validatedResult = createRentValidator(body);
             const bookIdExists = await bookRepository.findBooksByIdIfAvailable(validatedResult.bookId);
             if (bookIdExists?.id) {
-                const rentedBooksFromUser = await userRepository.findActiveRentsFromUser(validatedResult.userId);
+                const rentedBooksFromUser = await userRepository.findActiveRentsFromUser(validatedResult.userId || userId);
                 if (rentedBooksFromUser.length < 3) {
                     let returnDate = moment().add(7, 'days').format('Y-MM-DD');
                     const rentId = await rentRepository.saveRent({
-                        ...validatedResult,
+                        bookId: validatedResult.bookId,
+                        userId: validatedResult.userId || userId,
                         returnDate
                     });
-                    console.log('rent', rentId)
                     if(rentId[0]){
                         const updatedBook = await bookRepository.updateBook(validatedResult.bookId,{
                             available: 0

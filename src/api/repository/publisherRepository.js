@@ -17,7 +17,8 @@ module.exports = {
                 'name',
                 'createdAt',
                 'updatedAt'
-            );
+            )
+            .orderBy('id', 'desc');
     },
     async listOnePublisher(id){
         return await connection('publishers')

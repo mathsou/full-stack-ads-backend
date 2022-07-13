@@ -9,15 +9,14 @@ module.exports = {
         try {
             const validatedResult = createBookValidator(body);
             const authors = await authorRepository.findAuthorByIds(validatedResult.authors);
-            if (authors.length === validatedResult.authors.length) {
-                let authorIdsReceived = validatedResult.authors;
+            let authorIdsReceived = validatedResult.authors;
+            if (authors.length === authorIdsReceived.length) {
                 delete validatedResult.authors;
                 const createdBook = await bookRepository.saveBook(validatedResult)
                 authorIdsReceived.forEach((authorId) => {
                     authorBookRepository.saveAuthorBook({
                         bookId: createdBook[0],
                         authorId,
-                        available: 1
                     })
                 })
                 return {
@@ -29,7 +28,7 @@ module.exports = {
             let authorIds = authors.map(val => val.id);
             const idsNotFinded = authorIdsReceived.filter(val => !authorIds.includes(val))
             return {
-                code: 200,
+                code: 400,
                 msg: `Autores(as) de ids ${idsNotFinded.join(', ')} não encontrado!`
             }
         } catch (err) {
@@ -39,9 +38,22 @@ module.exports = {
     async listAllBooks({ name, isbn }) {
         try {
             const data = await bookRepository.listAllBooks({ name, isbn })
+            const formatedData = data.map(val => {
+                const authorNames = val.authors.split(',')
+                const authors = val.authorsIds.split(',').map((val, index)=>{
+                    return {
+                        id: val,
+                        name: authorNames[index]
+                    }
+                })
+                return {
+                    ...val,
+                    authors
+                }
+            })
             return {
                 code: 200,
-                data
+                data: formatedData
             }
         } catch (err) {
             return { code: 500, msg: err.message }
@@ -50,9 +62,24 @@ module.exports = {
     async listOneBook(id) {
         try {
             const data = await bookRepository.listOneBook(id)
+            const authorNames = data.authors.split(',')
+            const authors = data.authorsIds.split(',').map((val, index)=>{
+                return {
+                    id: val,
+                    name: authorNames[index]
+                }
+            })
+            if(data)
+                return {
+                    code: 200,
+                    data: {
+                        ...data,
+                        authors
+                    }
+                }
             return {
-                code: 200,
-                data
+                code: 400,
+                msg: 'Livro não encontrado'
             }
         } catch (err) {
             return { code: 500, msg: err.message }
@@ -94,16 +121,20 @@ module.exports = {
     },
     async deleteBook(id) {
         try {
-            if (await bookRepository.deleteBook(id)) {
+            if(await authorBookRepository.deleteAuthorByBookId(id)){
+                if (await bookRepository.deleteBook(id))
+                    return {
+                        code: 200,
+                        msg: "Livro excluído com sucesso!"
+                    }
                 return {
-                    code: 200,
-                    data,
-                    msg: "Livro excluído com sucesso!"
+                    code: 404,
+                    msg: "Livro não encontrado!",
                 }
             }
             return {
-                code: 404,
-                msg: "Livro não encontrado!",
+                code: 500,
+                msg: "Não foi possível excluir!",
             }
         } catch (err) {
             return { code: 500, msg: err.message }
