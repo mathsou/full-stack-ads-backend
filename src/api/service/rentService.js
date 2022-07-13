@@ -8,19 +8,36 @@ module.exports = {
     async rentBook(body) {
         try {
             const validatedResult = createRentValidator(body);
-            const bookIdExists = await bookRepository.findBooksByIdIfNotRented(validatedResult.bookId);
+            const bookIdExists = await bookRepository.findBooksByIdIfAvailable(validatedResult.bookId);
             if (bookIdExists?.id) {
                 const rentedBooksFromUser = await userRepository.findActiveRentsFromUser(validatedResult.userId);
                 if (rentedBooksFromUser.length < 3) {
                     let returnDate = moment().add(7, 'days').format('Y-MM-DD');
-                    await rentRepository.saveRent({
+                    const rentId = await rentRepository.saveRent({
                         ...validatedResult,
                         returnDate
-                    })
+                    });
+                    console.log('rent', rentId)
+                    if(rentId[0]){
+                        const updatedBook = await bookRepository.updateBook(validatedResult.bookId,{
+                            available: 0
+                        })
+                        if(updatedBook){
+                            return {
+                                code: 200,
+                                data: { returnDate },
+                                msg: "Retirada registrada com sucesso!"
+                            }
+                        }
+                        await rentRepository.deleteRent(rentId[0]);
+                        return {
+                            code: 500,
+                            msg: "Erro ao retirar livro!"
+                        }
+                    }
                     return {
-                        code: 200,
-                        data: { returnDate },
-                        msg: "Retirada registrada com sucesso!"
+                        code: 500,
+                        msg: "Erro ao retirar livro!"
                     }
                 }
                 return {
@@ -42,9 +59,21 @@ module.exports = {
                 returnedAt: moment().format('Y-MM-DD H:mm:ss')
             })
             if(updatedAuthor){
-                return { 
-                    code: 200, 
-                    msg: "Livro devolvido com sucesso!",
+                const updatedBook = await bookRepository.updateBook(id,{
+                    available: 1
+                })
+                if(updatedBook){
+                    return { 
+                        code: 200, 
+                        msg: "Livro devolvido com sucesso!",
+                    }
+                }
+                await rentRepository.updateRent(id, {
+                    returnedAt: null
+                })
+                return {
+                    code: 500,
+                    msg: "Erro ao devolver livro!"
                 }
             }
             return { 

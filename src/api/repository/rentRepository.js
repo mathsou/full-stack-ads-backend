@@ -8,7 +8,7 @@ module.exports = {
             ...payload,
             createdAt: now,
             updatedAt: now,
-        });
+        }, ['id']);
     },
     async updateRent(id, rent){
         return await connection('rents')
@@ -18,5 +18,10 @@ module.exports = {
             })
             .whereNull('returnedAt')
             .andWhere('bookId', id);
+    },
+    async deleteRent(id){
+        return await connection('rents')
+        .where('id', id)
+        .del();
     },
 }

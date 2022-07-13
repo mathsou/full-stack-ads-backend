@@ -16,7 +16,8 @@ module.exports = {
                 authorIdsReceived.forEach((authorId) => {
                     authorBookRepository.saveAuthorBook({
                         bookId: createdBook[0],
-                        authorId
+                        authorId,
+                        available: 1
                     })
                 })
                 return {

@@ -41,16 +41,13 @@ module.exports = {
             .where('books.id', id)
             .first();
     },
-    async findBooksByIdIfNotRented(id){
+    async findBooksByIdIfAvailable(id){
         return await connection('books')
-            .distinct(
-                'books.id',
-            ).leftJoin('rents', 'rents.bookId', 'books.id')
-            .where('books.id', id)
-            .andWhere((builder) => builder
-                .whereNotNull('returnedAt')
-                .orWhereNull('rents.id')
+            .select(
+                'id',
             )
+            .where('id', id)
+            .andWhere('available', 1)
             .first();
     },
     async updateBook(id, book){
@@ -58,7 +55,7 @@ module.exports = {
             .update({
                 ...book,
                 updatedAt: moment().format('Y-MM-DD H:mm:ss'),
-            }, ['id'])
+            })
             .where('id', id)
     },
     async deleteBook(id){
